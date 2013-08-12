@@ -102,14 +102,23 @@ bash "compile_nginx_source" do
   EOH
 
   not_if do
+    ::File.exists?("#{Chef::Config['file_cache_path'] || '/tmp'}/nginx-force-recompile") == false &&
     nginx_force_recompile == false &&
       node.automatic_attrs['nginx'] &&
       node.automatic_attrs['nginx']['version'] == node['nginx']['source']['version'] &&
       node.automatic_attrs['nginx']['configure_arguments'].sort == configure_flags.sort
   end
 
+  notifies :delete, "remote_file[nginx-force-recompile]"
   notifies :restart, "service[nginx]"
 end
+
+# Remove recompile pointer after recompile
+remote_file "nginx-force-recompile" do
+  path "#{Chef::Config['file_cache_path'] || '/tmp'}/nginx-force-recompile"
+  action :nothing
+end
+
 
 case node['nginx']['init_style']
 when "runit"
