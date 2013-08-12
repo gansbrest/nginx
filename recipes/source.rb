@@ -102,12 +102,12 @@ bash "compile_nginx_source" do
       node.automatic_attrs['nginx']['configure_arguments'].sort == configure_flags.sort
   end
 
-  notifies :delete, "remote_file[nginx-force-recompile]"
+  notifies :delete, "file[nginx-force-recompile]"
   notifies :restart, "service[nginx]"
 end
 
 # Remove recompile pointer after recompile
-remote_file "nginx-force-recompile" do
+file "nginx-force-recompile" do
   path "#{Chef::Config['file_cache_path'] || '/tmp'}/nginx-force-recompile"
   action :nothing
 end
