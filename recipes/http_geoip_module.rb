@@ -113,4 +113,4 @@ template "#{node['nginx']['dir']}/conf.d/http_geoip.conf" do
 end
 
 node.run_state['nginx_configure_flags'] =
-  node.run_state['nginx_configure_flags'] | ["--with-http_geoip_module", "--with-ld-opt='-Wl,-E'"]
+  node.run_state['nginx_configure_flags'] | ["--with-http_geoip_module", "--with-ld-opt=-Wl,-E"]
